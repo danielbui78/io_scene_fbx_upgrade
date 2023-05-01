@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 bl_info = {
-    "name": "FBX format",
-    "author": "Campbell Barton, Bastien Montagne, Jens Restemeier",
-    "version": (4, 37, 5),
+    "name": "FBX Upgrade (from Blender 3.6 alpha)",
+    "author": "Campbell Barton, Bastien Montagne, Jens Restemeier, @Mysteryem",
+    "version": (4, 37, 5, 1),
     "blender": (3, 4, 0),
     "location": "File > Import-Export",
-    "description": "FBX IO meshes, UVs, vertex colors, materials, textures, cameras, lamps and actions",
+    "description": "FBX Addon with updates from Blender 3.6 alpha",
     "warning": "",
-    "doc_url": "{BLENDER_MANUAL_URL}/addons/import_export/scene_fbx.html",
-    "support": 'OFFICIAL',
+    "doc_url": "",
+    "support": 'COMMUNITY',
     "category": "Import-Export",
 }
 
@@ -863,11 +863,11 @@ class FBX_PT_export_bake_animation(bpy.types.Panel):
 
 
 def menu_func_import(self, context):
-    self.layout.operator(ImportFBX.bl_idname, text="FBX (.fbx)")
+    self.layout.operator(ImportFBX.bl_idname, text="FBX Upgrade (.fbx)")
 
 
 def menu_func_export(self, context):
-    self.layout.operator(ExportFBX.bl_idname, text="FBX (.fbx)")
+    self.layout.operator(ExportFBX.bl_idname, text="FBX Upgrade (.fbx)")
 
 
 classes = (
