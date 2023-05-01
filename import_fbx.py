@@ -1963,7 +1963,7 @@ class FbxImportHelperNode:
             for child in self.children:
                 child.collect_armature_meshes()
 
-    def build_skeleton(self, arm, parent_matrix, parent_bone_size=1, force_connect_children=False):
+    def build_skeleton(self, fbx_tmpl, settings, arm, parent_matrix, parent_bone_size=1, force_connect_children=False):
         def child_connect(par_bone, child_bone, child_head, connect_ctx):
             # child_bone or child_head may be None.
             force_connect_children, connected = connect_ctx
@@ -2046,12 +2046,16 @@ class FbxImportHelperNode:
                 child_head = (bone_matrix @ child.get_bind_matrix().normalized()).translation
                 child_connect(bone, None, child_head, connect_ctx)
             elif child.is_bone and not child.ignore:
-                child_bone = child.build_skeleton(arm, bone_matrix, bone_size,
+                child_bone = child.build_skeleton(fbx_tmpl, settings, arm, bone_matrix, bone_size,
                                                   force_connect_children=force_connect_children)
                 # Connection to parent.
                 child_connect(bone, child_bone, None, connect_ctx)
 
         child_connect_finalize(bone, connect_ctx)
+
+        if settings.use_custom_props:
+            blen_read_custom_properties(self.fbx_elem, bone, settings)
+
         return bone
 
     def build_node_obj(self, fbx_tmpl, settings):
@@ -2085,6 +2089,11 @@ class FbxImportHelperNode:
 
     def build_skeleton_children(self, fbx_tmpl, settings, scene, view_layer):
         if self.is_bone:
+
+            if settings.use_custom_props:
+                pose_bone = self.bl_obj.pose.bones[self.bl_bone]
+                blen_read_custom_properties(self.fbx_elem, pose_bone, settings)
+
             for child in self.children:
                 if child.ignore:
                     continue
@@ -2246,7 +2255,7 @@ class FbxImportHelperNode:
                 if child.ignore:
                     continue
                 if child.is_bone:
-                    child.build_skeleton(self, Matrix(), force_connect_children=settings.force_connect_children)
+                    child.build_skeleton(fbx_tmpl, settings, self, Matrix(), force_connect_children=settings.force_connect_children)
 
             bpy.ops.object.mode_set(mode='OBJECT')
 
